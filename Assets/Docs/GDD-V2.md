@@ -6,48 +6,44 @@
 
 # Project Information
 
-**Project Name**
-Simple Crowd Simulator
-
-**Version**
-2.0
-
-**Engine**
-Unity 2022.3.62f3 LTS
-
-**Genre**
-3D Simulation
-
-**Platform**
-Windows (PC)
-
-**Programming Language**
-C#
+| Item                     | Description                          |
+| ------------------------ | ------------------------------------ |
+| **Project Name**         | Simple Crowd Simulator               |
+| **Version**              | 2.0                                  |
+| **Engine**               | Unity 2022.3.62f3 LTS                |
+| **Genre**                | 3D Simulation / RTS Learning Project |
+| **Platform**             | Windows (PC)                         |
+| **Programming Language** | C#                                   |
 
 ---
 
 # Project Goal
 
-Membangun simulasi kerumunan sederhana yang dapat dikendalikan oleh pemain menggunakan mouse.
+Membangun simulasi kerumunan sederhana yang dapat dikendalikan oleh pemain menggunakan sistem seleksi dan perintah (Selection & Command System).
 
-Project ini bertujuan mempelajari dasar-dasar pembuatan game 3D di Unity melalui implementasi sistem movement, AI sederhana, animasi karakter, dan interaksi antar NPC.
+Project ini bertujuan sebagai media pembelajaran Unity 3D dengan fokus pada arsitektur project, AI dasar, movement menggunakan NavMesh, sistem seleksi NPC, animasi karakter, dan interaksi antar NPC.
 
 ---
 
 # Learning Objectives
 
-Setelah menyelesaikan versi ini, diharapkan mampu memahami:
+Setelah menyelesaikan versi ini diharapkan memahami:
 
 * Unity Project Architecture
+* Clean Folder Structure
 * Mouse Input
 * Raycast
+* Selection System
+* Multi Selection
+* Drag Selection
+* Command System
 * NavMesh Navigation
 * Animator Controller
 * Animation State
 * NPC Behaviour
 * Finite State Machine (FSM)
 * Collision Avoidance
-* Basic Crowd AI
+* Crowd AI Basics
 * Debugging
 * Code Refactoring
 
@@ -55,64 +51,86 @@ Setelah menyelesaikan versi ini, diharapkan mampu memahami:
 
 # Gameplay
 
-Pemain mengontrol tujuan NPC menggunakan klik mouse.
+Pemain bertindak sebagai pengendali sekelompok NPC.
 
-NPC akan berjalan menuju titik yang dipilih.
+Pemain dapat:
 
-Selama berjalan NPC akan:
+* Memilih satu NPC menggunakan klik kiri.
+* Memilih beberapa NPC menggunakan drag selection.
+* Membatalkan pilihan dengan klik area kosong.
+* Memberikan perintah bergerak kepada NPC yang sedang dipilih.
 
-* Menghindari NPC lain
-* Mengubah animasi sesuai keadaan
-* Berhenti saat mencapai tujuan
-* Menunggu instruksi berikutnya
+NPC akan:
 
-Tidak ada sistem menang atau kalah.
+* Bergerak menuju tujuan menggunakan NavMesh.
+* Menghindari NPC lain selama bergerak.
+* Mengubah animasi sesuai state.
+* Berhenti ketika mencapai tujuan.
 
-Simulator hanya digunakan sebagai media pembelajaran.
+Project ini tidak memiliki kondisi menang atau kalah dan difokuskan sebagai media pembelajaran.
 
 ---
 
 # Core Gameplay Loop
 
-Player Click
-
-↓
-
-Raycast
-
-↓
-
-Target Position
-
-↓
-
-NPC Move
-
-↓
-
-Avoid Other NPC
-
-↓
-
+```text
+Player Select NPC
+        ↓
+Single / Multi Selection
+        ↓
+Click Ground
+        ↓
+Raycast Ground
+        ↓
+Move Command
+        ↓
+NPC Navigation
+        ↓
+Collision Avoidance
+        ↓
 Destination Reached
-
-↓
-
+        ↓
 Idle
+```
 
-↓
+---
 
-Waiting Next Click
+# Player Controls
+
+| Input                 | Function          |
+| --------------------- | ----------------- |
+| Left Click NPC        | Select Single NPC |
+| Mouse Drag            | Multi Selection   |
+| Left Click Ground     | Move Selected NPC |
+| Left Click Empty Area | Deselect          |
 
 ---
 
 # Features
 
+## Selection System
+
+* Single Selection
+* Multi Selection
+* Drag Selection Box
+* Selected Highlight
+* Deselect
+
+---
+
+## Command System
+
+* Move Command
+* Group Movement
+* Destination Assignment
+
+---
+
 ## Input System
 
 * Mouse Left Click
-* Raycast Ground Detection
-* Destination Marker (Opsional)
+* Mouse Drag
+* Raycast Detection
 
 ---
 
@@ -122,7 +140,7 @@ Waiting Next Click
 * NavMesh Navigation
 * Smooth Rotation
 * Stop Distance
-* Movement Speed
+* Adjustable Move Speed
 
 ---
 
@@ -130,9 +148,9 @@ Waiting Next Click
 
 * Idle
 * Walk
-* Run (Opsional)
+* Run (Optional)
 
-Animasi akan berubah otomatis berdasarkan kecepatan NPC.
+Animasi berubah secara otomatis berdasarkan kecepatan NPC.
 
 ---
 
@@ -142,33 +160,45 @@ NPC memiliki beberapa state.
 
 ### Idle
 
-NPC diam.
+NPC diam dan menunggu perintah.
 
-Animasi Idle aktif.
+---
 
-### Walking
+### Selected
 
-NPC berjalan menuju tujuan.
+NPC sedang dipilih oleh pemain.
+
+NPC akan menampilkan indikator visual.
+
+---
+
+### Moving
+
+NPC bergerak menuju tujuan.
 
 Animasi Walk aktif.
 
-### Waiting
-
-NPC telah mencapai tujuan.
-
-NPC berhenti.
+---
 
 ### Avoiding
 
-NPC menghindari NPC lain apabila terlalu dekat.
+NPC menjaga jarak dan menghindari NPC lain.
+
+---
+
+### Arrived
+
+NPC telah mencapai tujuan.
+
+Kembali ke state Idle.
 
 ---
 
 ## Crowd System
 
-NPC dapat:
+NPC mampu:
 
-* Menjaga jarak
+* Menjaga Personal Space
 * Menghindari tabrakan
 * Bergerak secara halus
 * Mengikuti jalur NavMesh
@@ -179,44 +209,49 @@ NPC dapat:
 
 * NPC Counter
 * FPS Counter
+* Selected NPC Counter (Optional)
 
 ---
 
 # AI State Diagram
 
+```text
 Idle
-
-↓
-
-Walking
-
-↓
-
-Destination Reached
-
-↓
-
-Waiting
-
-↓
-
-Idle
-
-Selama Walking:
-
-Walking
-
-↓
-
-Detect NPC
-
-↓
-
+ ↓
+Selected
+ ↓
+Moving
+ ↓
 Avoiding
+ ↓
+Moving
+ ↓
+Arrived
+ ↓
+Idle
+```
 
-↓
+---
 
-Walking
+# Visual Feedback
+
+## Selected NPC
+
+* Selection Circle
+* Highlight Material
+* Outline (Optional)
+
+---
+
+## Destination
+
+* Destination Marker (Optional)
+
+---
+
+## Selection Box
+
+* Semi Transparent Rectangle
 
 ---
 
@@ -235,13 +270,17 @@ Walking
 * Capsule Character
 * NavMeshAgent
 * Animator
+* Capsule Collider
+* Selection Indicator
 
 ---
 
 ## Systems
 
+* Selection Manager
 * Input Manager
 * NPC Manager
+* Command Manager
 * Spawn Manager
 * UI Manager
 
@@ -249,45 +288,32 @@ Walking
 
 # Project Structure
 
+```text
 Assets
-
+│
 ├── Animations
-
 ├── Art
-
 ├── Materials
-
 ├── Prefabs
-
 ├── Scenes
-
+│
 ├── Scripts
-
+│   ├── Core
+│   ├── Input
+│   ├── Managers
+│   ├── NPC
+│   │   ├── Animation
+│   │   ├── Behavior
+│   │   ├── Controller
+│   │   ├── Detection
+│   │   ├── Movement
+│   │   └── Selection
+│   │
+│   ├── UI
+│   └── Utilities
 │
-
-├── Core
-
-├── Input
-
-├── Managers
-
-├── NPC
-
-│   ├── Animation
-
-│   ├── Behavior
-
-│   ├── Detection
-
-│   ├── Movement
-
-│
-
-├── UI
-
-│
-
-└── Utilities
+└── Settings
+```
 
 ---
 
@@ -299,52 +325,64 @@ Project Refactoring
 
 * Rapikan struktur folder
 * Pisahkan script berdasarkan tanggung jawab
-* Bersihkan kode versi 1.0
+* Bersihkan kode v1.0
 
 ---
 
 ## Phase 2
 
-Mouse Input
+Selection System
 
-* Raycast
-* Click Position
-* Target Destination
+* Single Selection
+* Highlight NPC
+* Deselect
 
 ---
 
 ## Phase 3
 
-NPC Movement
+Multi Selection
 
-* Click To Move
-* Rotation
-* Stop Distance
+* Drag Selection
+* Selection Box
+* Multiple Selection
 
 ---
 
 ## Phase 4
 
-Animation
+Command System
 
-* Idle
-* Walk
-* Animator Controller
+* Click Ground
+* Move Selected NPC
+* Group Movement
 
 ---
 
 ## Phase 5
 
-Behaviour
+Movement & Animation
 
-* FSM
-* Idle
-* Walking
-* Waiting
+* NavMesh Movement
+* Rotation
+* Idle Animation
+* Walk Animation
 
 ---
 
 ## Phase 6
+
+Behaviour System
+
+* FSM
+* Idle
+* Selected
+* Moving
+* Arrived
+
+---
+
+## Phase 7
 
 Crowd Intelligence
 
@@ -354,20 +392,31 @@ Crowd Intelligence
 
 ---
 
-## Phase 7
+## Phase 8
 
 Polishing
 
 * Debug Gizmos
+* UI Improvements
 * Code Cleanup
 * Optimization
 * Build
 
 ---
 
+# Technical Constraints
+
+Target Performance
+
+* 100 NPC
+* Stable 60 FPS
+* Windows Platform
+
+---
+
 # Out of Scope
 
-Versi ini tidak akan membahas:
+Versi ini tidak mencakup:
 
 * Multiplayer
 * Inventory
@@ -376,7 +425,7 @@ Versi ini tidak akan membahas:
 * Quest System
 * Dialogue
 * Saving System
-* DOTS/ECS
+* DOTS / ECS
 * Vertex Animation Texture (VAT)
 * Behavior Tree
 * GOAP
@@ -386,31 +435,62 @@ Versi ini tidak akan membahas:
 
 # Success Criteria
 
-Project dianggap selesai apabila memenuhi seluruh kondisi berikut:
+Project dianggap selesai apabila:
 
-* NPC dapat bergerak menuju titik hasil klik mouse.
+* Player dapat memilih satu NPC.
+* Player dapat memilih banyak NPC menggunakan drag selection.
+* NPC yang dipilih memiliki indikator visual.
+* Hanya NPC yang dipilih menerima perintah.
+* NPC bergerak menuju tujuan menggunakan NavMesh.
 * NPC berpindah animasi Idle dan Walk secara otomatis.
-* NPC tidak saling bertabrakan secara langsung.
-* NPC memiliki state Idle, Walking, Waiting, dan Avoiding.
-* UI menampilkan jumlah NPC dan FPS.
+* NPC menghindari tabrakan dengan NPC lain.
+* UI menampilkan jumlah NPC.
+* UI menampilkan FPS.
 * Struktur project tetap rapi dan mudah dikembangkan.
+
+---
+
+# Future Features
+
+## Version 2.1
+
+* Formation Movement
+* Leader-Follower
+* Better Collision Avoidance
+
+---
+
+## Version 3.0
+
+* Waypoint System
+* Patrol System
+* Queue System
+* Job System
+* Object Pooling
 
 ---
 
 # Version History
 
-## v1.0
+## Version 1.0
 
-* Random Movement
+* Random NPC Movement
 * Spawn Manager
 * NPC Counter
 * FPS Counter
 * Basic Optimization
 
-## v2.0
+---
 
+## Version 2.0
+
+* Single Selection
+* Multi Selection
+* Drag Selection
+* Command System
 * Click To Move
 * Animation Controller
 * FSM Behaviour
 * Crowd Avoidance
 * Project Refactoring
+* Improved Project Architecture
