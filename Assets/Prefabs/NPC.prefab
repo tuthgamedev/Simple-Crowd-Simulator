@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4597818130680317506}
   - component: {fileID: -953668526583208599}
   - component: {fileID: -435149886737418950}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: NPC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -121,7 +121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e45580328cab5f344b8dc9f1f9b64491, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 3
+  walkRadius: 20
 --- !u!195 &-435149886737418950
 NavMeshAgent:
   m_ObjectHideFlags: 0

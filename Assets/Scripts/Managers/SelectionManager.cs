@@ -4,15 +4,25 @@ using UnityEngine;
 
 public class SelectionManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private NPCSelection _currentSelectedNPC;
+    public NPCSelection CurrentSelectedNPC => _currentSelectedNPC;
+    public void Select(NPCSelection npc)
     {
-        
+        if (_currentSelectedNPC == npc)
+            return;
+
+        ClearSelection();
+
+        _currentSelectedNPC = npc;
+
+        _currentSelectedNPC.Select();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void ClearSelection()
     {
-        
+        if (_currentSelectedNPC == null)
+        return;
+            _currentSelectedNPC.Deselect();
+            _currentSelectedNPC = null;
     }
 }
