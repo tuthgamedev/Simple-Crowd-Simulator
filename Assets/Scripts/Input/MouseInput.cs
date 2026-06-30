@@ -4,15 +4,30 @@ using UnityEngine;
 
 public class MouseInput : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private Camera _mainCamera;
+    [SerializeField] private SelectionManager _selectionManager;
+
+    private void Update()
     {
-        
+        if (Input.GetMouseButtonDown(0))
+        {
+            HandleLeftClick();
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void HandleLeftClick()
     {
-        
+        Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
+
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            NPCSelection npc = hit.collider.GetComponent<NPCSelection>();
+            if (npc != null)
+            {
+                _selectionManager.Select(npc);
+                return;
+            }
+        }
+            _selectionManager.ClearSelection();
     }
 }

@@ -18,7 +18,7 @@ public class SelectionManager : MonoBehaviour
         _currentSelectedNPC.Select();
     }
 
-    private void ClearSelection()
+    public void ClearSelection()
     {
         if (_currentSelectedNPC == null)
         return;

@@ -259,3 +259,36 @@ Pada tahap ini belum ada interaksi dengan mouse maupun visual NPC. `SelectionMan
 
 **Status:** ✅ Completed
 
+## Progress — Step 2
+
+### NPC Selection Component
+
+Dibuat `NPCSelection.cs` sebagai komponen yang dipasang pada setiap NPC.
+
+Tanggung jawab komponen ini:
+
+* Menyimpan status apakah NPC sedang dipilih.
+* Menyediakan fungsi `Select()`.
+* Menyediakan fungsi `Deselect()`.
+* Menyediakan properti hanya-baca `IsSelected` untuk dicek oleh sistem lain.
+
+Pada tahap ini komponen belum mengubah tampilan NPC. Visual seperti outline, perubahan material, atau selection circle akan ditambahkan pada tahap berikutnya agar logika dan tampilan tetap terpisah.
+
+**Status:** ✅ Completed
+
+## Progress — Step 3
+
+### Mouse Input
+
+Dibuat `MouseInput.cs` sebagai penghubung antara pemain dan Selection System.
+
+Tanggung jawab komponen ini:
+
+* Membaca klik kiri mouse.
+* Membuat Raycast dari posisi mouse ke dunia 3D.
+* Mendeteksi apakah objek yang diklik memiliki komponen `NPCSelection`.
+* Mengirim hasil seleksi ke `SelectionManager`.
+
+Pada tahap ini `MouseInput` tidak mengubah status NPC secara langsung. Seluruh keputusan tetap didelegasikan ke `SelectionManager`, sehingga sistem input tetap terpisah dari logika seleksi.
+
+**Status:** ✅ Completed
