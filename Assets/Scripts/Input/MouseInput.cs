@@ -7,6 +7,7 @@ public class MouseInput : MonoBehaviour
     [SerializeField] private Camera _mainCamera;
     [SerializeField] private SelectionManager _selectionManager;
     [SerializeField] private SelectionBoxUI _selectionBoxUI;
+    [SerializeField] private CommandManager _commandManager;
 
     private Vector2 _dragStartPosition;
     private bool _isDragging;
@@ -28,6 +29,11 @@ public class MouseInput : MonoBehaviour
         if (Input.GetMouseButtonUp(0))
         {
             EndDrag();
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            HandleRightClick();
         }
     }
 
@@ -111,5 +117,15 @@ public class MouseInput : MonoBehaviour
         }
 
         _selectionManager.ClearSelection();
+    }
+
+    private void HandleRightClick()
+    {
+        Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
+
+        if (!Physics.Raycast(ray, out RaycastHit hit))
+            return;
+
+        _commandManager.MoveSelectedNPCs(hit.point);
     }
 }

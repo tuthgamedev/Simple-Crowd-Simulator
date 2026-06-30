@@ -5,38 +5,23 @@ using UnityEngine.AI;
 
 public class NPCMovement : MonoBehaviour
 {
-    private NavMeshAgent agent;
+    [SerializeField] private NavMeshAgent _agent;
     public float walkRadius = 20f;
 
-    private void Start()
+    private void Awake()
     {
-        agent = GetComponent<NavMeshAgent>();
-        SetNewDestination();
+        if (_agent == null)
+            _agent = GetComponent<NavMeshAgent>();
     }
-    void Update()
+
+    public void MoveTo(Vector3 destination)
     {
-        if (!agent.pathPending &&
-        agent.remainingDistance <= agent.stoppingDistance)
+        if (_agent == null)
         {
-            SetNewDestination();
+            Debug.LogError($"{name} tidak memiliki NavMeshAgent.");
+            return;
         }
-    }
-    void SetNewDestination()
-    {
-        Vector3 randomDirection = 
-            Random.insideUnitSphere * walkRadius;
         
-        randomDirection += transform.position;
-
-        NavMeshHit hit;
-
-        if (NavMesh.SamplePosition(
-            randomDirection,
-            out hit,
-            walkRadius,
-            NavMesh.AllAreas))
-        {
-            agent.SetDestination(hit.position);
-        }
+        _agent.SetDestination(destination);
     }
 }
