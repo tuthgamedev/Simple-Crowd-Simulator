@@ -122,7 +122,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e45580328cab5f344b8dc9f1f9b64491, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkRadius: 20
+  _rotationSpeed: 10
+  currentState: 0
 --- !u!195 &-435149886737418950
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -157,6 +158,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d165bacaaa21c4478ed3478b743d011, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _meshrenderer: {fileID: 4974457179848544169}
+  _meshRenderer: {fileID: 0}
   _normalMaterial: {fileID: 2100000, guid: dd1fef1c834d8a84aba661ef95501c68, type: 2}
   _selectedMaterial: {fileID: 2100000, guid: 868014a166c5d764b950cc12a552ed68, type: 2}
