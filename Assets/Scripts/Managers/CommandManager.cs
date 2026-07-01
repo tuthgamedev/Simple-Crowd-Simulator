@@ -13,6 +13,7 @@ public class CommandManager : MonoBehaviour
    public void MoveSelectedNPCs(Vector3 destination)
    {    
         List<NPCSelection> selected = new List<NPCSelection>(_selectionManager.SelectedNPCs);
+        
         int npcCount = selected.Count;
 
         if (npcCount == 0)
@@ -21,16 +22,7 @@ public class CommandManager : MonoBehaviour
             return;
         }
 
-        int columns = Mathf.CeilToInt(Mathf.Sqrt(npcCount));
-        int rows = Mathf.CeilToInt((float)npcCount / columns);
-
-        float formationWidth = (columns - 1) * _formationSpacing;
-        float formationHeight = (rows - 1) * _formationSpacing;
-
-        Debug.Log($"NPC : {npcCount}");
-
-        Debug.Log($"Columns : {columns}");
-        Debug.Log($"Move Command -> {_selectionManager.SelectedNPCs.Count} NPC");
+        Debug.Log($"Move Command -> {npcCount} NPC");
 
         Vector3 center = Vector3.zero;
 
@@ -52,59 +44,38 @@ public class CommandManager : MonoBehaviour
         {
             forward.Normalize();
         }
+        
+        List<FormationSlot> slots = 
+        FormationGenerator.GenerateRectangle(
+            destination,
+            forward,
+            npcCount,
+            _formationSpacing
+        );
 
-        Vector3 right = Vector3.Cross(Vector3.up, forward);
+        List<(NPCSelection npc, FormationSlot slot)> assignments =
+        FormationAssigner.AssignRelative(
+            selected, 
+            slots,
+            center,
+            forward
+        );
 
-        Vector3 formationOffset =
-            right * (formationWidth * 0.5f) +
-            forward * (-formationHeight * 0.5f);
-
-        Debug.Log($"Forward : {forward}");
-        Debug.Log($"Right : {right}");
-
-        List<Vector3> slots = new List<Vector3>();
-
-        for (int i = 0; i < npcCount; i++)
+        foreach (var assignment in assignments)
         {
-            int row = i / columns;
-            int column = i % columns;
-
-            Vector3 offset =
-                right * (column * _formationSpacing)
-                +
-                forward * (-row * _formationSpacing);
-
-            offset -= formationOffset;
-
-            slots.Add(destination + offset);
-        }
-
-        foreach (NPCSelection npc in selected)
-        {
-            float bestDistance = Mathf.Infinity;
-            int bestIndex = 0;
-
-            for (int i = 0; i < slots.Count; i++)
-            {
-                float distance = Vector3.SqrMagnitude(npc.transform.position - slots[i]);
-                if (distance < bestDistance)
-                {
-                    bestDistance = distance;
-                    bestIndex = i;
-                }
-            }
-
-            Vector3 target = slots[bestIndex];
-            slots.RemoveAt(bestIndex);
-            NPCMovement movement = npc.GetComponent<NPCMovement>();
-
-            if(movement != null)
-                movement.MoveTo(target);
+            NPCMovement movement = assignment.npc.GetComponent<NPCMovement>();
+            
+            if (movement == null)
+            continue;
+            
+            assignment.slot.Reserve(movement);
+            movement.SetTargetSlot(assignment.slot);
+            movement.MoveTo(assignment.slot.Position);
 
             if (showDebug)
             {
-                Debug.Log($"{npc.name} -> {target}");
-            } 
+                Debug.Log($"{assignment.npc.name} -> {assignment.slot.Position}");
+            }
         }
    }
 }

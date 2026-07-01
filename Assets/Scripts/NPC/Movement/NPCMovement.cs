@@ -15,15 +15,17 @@ public class NPCMovement : MonoBehaviour
     [SerializeField] private float _rotationSpeed = 10f;
     [SerializeField] private NPCState currentState;
     public NPCState CurrentState => currentState;
+    public FormationSlot CurrentSlot { get; private set; }
+    private FormationSlot _targetSlot;
 
     private void Awake()
     {
         if (_agent == null)
         {
             _agent = GetComponent<NavMeshAgent>();
+            currentState = NPCState.Idle;
         }
 
-        currentState = NPCState.Idle;
         
     }   
 
@@ -31,19 +33,6 @@ public class NPCMovement : MonoBehaviour
     {
         RotateTowardsMovement();
         CheckArrival();
-    }
-
-    private void CheckArrival()
-    {
-        if (currentState != NPCState.Moving)
-            return;
-        
-        if (HasReachedDestination())
-        {
-            _agent.isStopped = true;
-            currentState = NPCState.Idle;
-            Debug.Log($"{name} telah mencapai tujuan.");
-        }
     }
 
     public void MoveTo(Vector3 destination)
@@ -56,7 +45,42 @@ public class NPCMovement : MonoBehaviour
         
         _agent.isStopped = false;
         _agent.SetDestination(destination);
+
         currentState = NPCState.Moving;
+    }
+
+    public void SetTargetSlot(FormationSlot slot)
+    {
+        _targetSlot = slot;
+        Debug.Log($"{name} menerima target slot di posisi {slot.Position}");
+        
+    }
+
+    private void CheckArrival()
+    {
+        if (currentState != NPCState.Moving)
+            return;
+        
+        if (!HasReachedDestination())
+            return;
+
+        _agent.isStopped = true;
+        currentState = NPCState.Idle;
+
+        if (CurrentSlot != null)
+        {
+            CurrentSlot.Release();
+        }
+            
+        if (_targetSlot != null)
+        {
+            Debug.Log($"{name} mempunyai target slot di posisi {_targetSlot.Position}. Menempati slot.");
+            CurrentSlot = _targetSlot;
+            CurrentSlot.Occupy();
+            _targetSlot = null;
+        }
+        
+        Debug.Log($"{name} telah mencapai tujuan.");
     }
 
     public bool HasReachedDestination()
@@ -80,6 +104,6 @@ public class NPCMovement : MonoBehaviour
             targetRotation,
             _rotationSpeed * Time.deltaTime
         );
-        
     }
+
 }
