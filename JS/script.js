@@ -21,7 +21,7 @@
       playUrl: './v1.0/index.html'
     },
     v2: {
-      title: 'VERSION 2 (V2) — LATEST',
+      title: 'VERSION 2 (V2)',
       features: ['Obstacle avoidance', 'Waypoint system', 'Performance optimization'],
       released: '2024-08-15',
       playUrl: './v2/index.html'
@@ -33,7 +33,7 @@
       playUrl: './v3/index.html'
     },
     latest: {
-      title: 'VERSION 3 (V3) ',
+      title: 'VERSION 3 (V3) — LATEST',
       features: ['Group behavior', 'Formation movement', 'UI & Settings'],
       released: '2024-11-20',
       playUrl: './v3/index.html'
