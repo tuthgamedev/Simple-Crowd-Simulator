@@ -18,13 +18,13 @@
       title: 'VERSION 1 (V1)',
       features: ['Basic crowd movement', 'Random walk behavior', 'Simple environment'],
       released: '2024-05-10',
-      playUrl: './v1.0/index.html'
+      playUrl: './v1/index.html'
     },
     v2: {
       title: 'VERSION 2 (V2)',
       features: ['Obstacle avoidance', 'Waypoint system', 'Performance optimization'],
       released: '2024-08-15',
-      playUrl: './v2/index.html'
+      playUrl: './v2.0.0/index.html'
     },
     v3: {
       title: 'VERSION 3 (V3)',
