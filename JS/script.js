@@ -18,7 +18,7 @@
       title: 'VERSION 1 (V1)',
       features: ['Basic crowd movement', 'Random walk behavior', 'Simple environment'],
       released: '2024-05-10',
-      playUrl: './v1/index.html'
+      playUrl: './v1.0/index.html'
     },
     v2: {
       title: 'VERSION 2 (V2.0.0)',
