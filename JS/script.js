@@ -23,7 +23,7 @@
     v2: {
       title: 'VERSION 2 (V2)',
       features: ['Obstacle avoidance', 'Waypoint system', 'Performance optimization'],
-      released: '2026-07-1',
+      released: '2024-08-15',
       playUrl: './v2.0.0/index.html'
     },
     v3: {
