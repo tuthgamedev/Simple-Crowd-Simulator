@@ -1,0 +1,36 @@
+# ============================================================
+# .gitignore for Simple Crowd Simulator Web Demo Launcher
+# ============================================================
+
+# Unity WebGL Build outputs (can be large, optional to commit)
+# Uncomment these lines if you DON'T want to commit Unity builds to git
+# (recommended for private repos to keep size down)
+#
+# v1/Build/
+# v1/TemplateData/
+# v2/Build/
+# v2/TemplateData/
+# v3/Build/
+# v3/TemplateData/
+
+# If you DO want to commit builds, they should already be in v1/, v2/, v3/
+# Just make sure index.html is there.
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node (if you ever add a build step)
+node_modules/
+.env
+*.log
+
+# Launcher assets (if using image optimization tools)
+assets/.original/
+assets/**/*.psd
