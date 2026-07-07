@@ -1208,7 +1208,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _slotRadius: 0.5
-  _markerPrefab: {fileID: 8670028167283874405, guid: f0557a131589f514d849c321ce028a07, type: 3}
+  _markerPrefab: {fileID: 4342603107624134376, guid: 8ad0b0fc314174142bcbe5b07dfae559, type: 3}
 --- !u!4 &856488870
 Transform:
   m_ObjectHideFlags: 0
@@ -1406,6 +1406,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8d382d12cf5cc94692a1d8847b3a630, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _currentFormation: 6
   _formationSpacing: 2
   _selectionManager: {fileID: 1037381534}
   showDebug: 0

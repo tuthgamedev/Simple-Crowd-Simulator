@@ -5,7 +5,9 @@ using UnityEngine;
 public class CommandManager : MonoBehaviour
 {
     [Header("Formation")]
+    [SerializeField] private FormationType _currentFormation = FormationType.Rectangle;
     [SerializeField] private float _formationSpacing = 2f;
+
     [Header("Reference")]
     [SerializeField] private SelectionManager _selectionManager;
     [SerializeField] private bool showDebug = false;
@@ -46,7 +48,8 @@ public class CommandManager : MonoBehaviour
         }
         
         List<FormationSlot> slots = 
-        FormationGenerator.GenerateRectangle(
+        FormationGenerator.GenerateFormation(
+            _currentFormation,
             destination,
             forward,
             npcCount,
