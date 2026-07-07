@@ -53,6 +53,8 @@ public class CommandManager : MonoBehaviour
             _formationSpacing
         );
 
+        FormationVisualizer.Instance.SetSlots(slots);
+
         List<(NPCSelection npc, FormationSlot slot)> assignments =
         FormationAssigner.AssignRelative(
             selected, 
