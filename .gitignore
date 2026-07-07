@@ -34,3 +34,4 @@ node_modules/
 # Launcher assets (if using image optimization tools)
 assets/.original/
 assets/**/*.psd
+Simple-Crowd-Simulator/
