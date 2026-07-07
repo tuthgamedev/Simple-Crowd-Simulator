@@ -79,5 +79,31 @@ public class CommandManager : MonoBehaviour
                 Debug.Log($"{assignment.npc.name} -> {assignment.slot.Position}");
             }
         }
+        
+        StartCoroutine(WaitUntilFormationComplete(selected));
    }
+
+   private IEnumerator WaitUntilFormationComplete(List<NPCSelection> selected)
+    {
+        bool completed = false;
+
+        while(!completed)
+        {    
+            completed = true;
+
+            foreach (var npc in selected)
+            {
+                NPCMovement movement =npc.GetComponent<NPCMovement>();
+
+                if (movement.CurrentState != NPCState.Idle)
+                {
+                    completed = false;
+                    break;
+                }
+            }
+
+            yield return null;
+        }
+        FormationVisualizer.Instance.HideMarkers();
+    }
 }

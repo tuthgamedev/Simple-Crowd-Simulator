@@ -1,144 +1,40 @@
-# Day 7 - Formation Visualizer
+# Day 7 - Formation Visualization System
 
-## Step 1 - Membuat FormationVisualizer
-
-### Tujuan
-
-Membangun komponen yang bertugas menyimpan seluruh FormationSlot hasil generate agar dapat digunakan untuk visualisasi menggunakan Gizmos pada step berikutnya.
+Tanggal: xx/xx/2026
 
 ---
 
-## Yang Dikerjakan
+# Tujuan
 
-- Membuat script `FormationVisualizer.cs`
-- Menerapkan Singleton Pattern
-- Menambahkan cache `List<FormationSlot>`
-- Menambahkan property `IReadOnlyList<FormationSlot>`
-- Menambahkan method:
-  - `SetSlots()`
-  - `ClearSlots()`
+Pada Day 7 fokus utama adalah membangun sistem visualisasi formasi sehingga pemain dapat melihat posisi tujuan setiap NPC sebelum mereka sampai di lokasi.
+
+Selain itu, sistem slot juga mulai memiliki lifecycle yang jelas (Free → Reserved → Occupied → Free).
 
 ---
 
-## Arsitektur
+# Progress
 
-CommandManager
+## ✅ Step 1 - Formation Visualizer
 
-↓
+Membuat singleton `FormationVisualizer`.
 
-FormationGenerator
+Fungsi:
 
-↓
+- Menyimpan daftar slot aktif.
+- Menjadi pusat visualisasi formasi.
+- Dapat diakses dari CommandManager.
 
-FormationVisualizer (Cache Slot)
+Class:
 
-↓
-
-FormationAssigner
-
-↓
-
-NPC Movement
+- FormationVisualizer.cs
 
 ---
 
-## Hasil
+## ✅ Step 2 - Menghubungkan CommandManager
 
-FormationVisualizer kini dapat menyimpan seluruh slot terakhir yang dihasilkan oleh FormationGenerator.
+Setelah formasi selesai dibuat oleh `FormationGenerator`, daftar slot langsung dikirim ke FormationVisualizer.
 
-Belum ada visualisasi pada Scene View. Tahap ini hanya mempersiapkan data yang akan digunakan pada langkah berikutnya.
-
----
-
-## Status
-
-✅ Step 1 Selesai
-
-Progress Day 7:
-
-- [x] Step 1 - FormationVisualizer
-- [ ] Step 2 - Menghubungkan CommandManager
-- [ ] Step 3 - Menggambar Gizmos
-- [ ] Step 4 - Pewarnaan Slot
-- [ ] Step 5 - Debug Visual
-
-## Step 2 - Menghubungkan CommandManager
-
-### Tujuan
-
-Menghubungkan CommandManager dengan FormationVisualizer agar setiap formasi yang baru dibuat dapat disimpan dan digunakan untuk proses visualisasi.
-
----
-
-## Yang Dikerjakan
-
-- Memodifikasi `CommandManager.cs`
-- Menambahkan pemanggilan:
-  - `FormationVisualizer.Instance.SetSlots(slots)`
-- Menambahkan pengecekan `Instance != null` untuk mencegah NullReferenceException.
-
----
-
-## Alur Baru
-
-Mouse Right Click
-
-↓
-
-GenerateRectangle()
-
-↓
-
-FormationVisualizer.SetSlots()
-
-↓
-
-AssignRelative()
-
-↓
-
-NPC Movement
-
----
-
-## Hasil
-
-Setiap kali pemain memberikan perintah bergerak, seluruh FormationSlot yang baru dibuat langsung disimpan oleh FormationVisualizer.
-
-Belum ada perubahan visual pada Scene View karena proses penggambaran Gizmos akan dilakukan pada Step 3.
-
----
-
-## Status
-
-✅ Step 2 Selesai
-
-Progress Day 7:
-
-- [x] Step 1 - FormationVisualizer
-- [x] Step 2 - Hubungkan CommandManager
-- [ ] Step 3 - Menggambar Gizmos
-- [ ] Step 4 - Pewarnaan Slot
-- [ ] Step 5 - Debug Visual
-
-## Step 3 - Menggambar Gizmos
-
-### Tujuan
-
-Menampilkan seluruh FormationSlot pada Scene View menggunakan Unity Gizmos agar formasi dapat divisualisasikan selama proses debugging.
-
----
-
-## Yang Dikerjakan
-
-- Menambahkan method `OnDrawGizmos()`
-- Menggambar setiap FormationSlot menggunakan `Gizmos.DrawSphere()`
-- Menambahkan parameter `_slotRadius` agar ukuran visual slot dapat diatur melalui Inspector.
-- Menggunakan warna hijau sebagai warna default semua slot.
-
----
-
-## Alur
+Flow:
 
 CommandManager
 
@@ -150,98 +46,259 @@ FormationGenerator
 
 FormationVisualizer.SetSlots()
 
-↓
+---
 
-OnDrawGizmos()
+## ✅ Step 3 - Gizmos Debug
 
-↓
+Menambahkan visualisasi slot menggunakan Gizmos.
 
-Scene View
+Visual:
+
+- Garis vertikal merah
+- Sphere merah
+
+Digunakan hanya untuk debugging di Scene View.
 
 ---
 
-## Hasil
+## ✅ Step 4 - Runtime Formation Marker
 
-Setiap kali pemain memberikan perintah bergerak, slot-slot formasi langsung terlihat pada Scene View sebagai bola hijau kecil.
+Menambahkan object marker yang muncul saat game berjalan.
 
-Visualisasi ini mempermudah proses debugging dan verifikasi posisi formasi.
+Class baru:
 
----
+- FormationMarker.cs
 
-## Status
+Fungsi:
 
-✅ Step 3 Selesai
-
-Progress Day 7
-
-- [x] Step 1 - FormationVisualizer
-- [x] Step 2 - Hubungkan CommandManager
-- [x] Step 3 - Menggambar Gizmos
-- [ ] Step 4 - Pewarnaan Slot
-- [ ] Step 5 - Debug Visual Lengkap
-
-## Step 4 - Pewarnaan Slot Berdasarkan Status
-
-### Tujuan
-
-Memberikan visualisasi status setiap FormationSlot menggunakan warna berbeda agar proses debugging formasi menjadi lebih mudah.
+- Menampilkan posisi slot di Game View.
+- Tidak lagi bergantung pada Gizmos.
 
 ---
 
-## Yang Dikerjakan
+## ✅ Step 5 - Spawn Marker
 
-- Mengubah warna Gizmos berdasarkan `FormationSlotState`.
-- Menggunakan `switch` untuk menentukan warna:
-  - Hijau (`Free`)
-  - Kuning (`Reserved`)
-  - Merah (`Occupied`)
-- Menggunakan `_slotRadius` sebagai ukuran sphere agar dapat diatur dari Inspector.
-- Menambahkan visual garis vertikal menggunakan `Debug.DrawLine()`.
+FormationVisualizer sekarang dapat:
 
----
+- Menghapus marker lama.
+- Membuat marker baru.
+- Menempatkan marker sesuai slot.
 
-## Alur
+Flow:
 
-FormationSlot.State
+Generate Slot
 
 ↓
 
-OnDrawGizmos()
+Destroy Marker Lama
 
 ↓
 
-Switch State
+Instantiate Marker Baru
 
 ↓
 
-Set Gizmos.color
-
-↓
-
-DrawSphere()
+Marker muncul di Game View
 
 ---
 
-## Hasil
+## ✅ Step 6 - Slot State Event
 
-Visualisasi formasi kini menunjukkan status setiap slot secara real-time:
+FormationSlot sekarang memiliki event.
 
-- 🟢 Slot kosong.
-- 🟡 Slot sudah dipesan oleh NPC.
-- 🔴 Slot telah ditempati NPC.
+```csharp
+OnStateChanged
+```
 
-Perubahan warna mempermudah proses debugging dan validasi sistem formasi.
+Marker tidak lagi di-update secara manual.
+
+Flow:
+
+FormationSlot
+
+↓
+
+OnStateChanged
+
+↓
+
+FormationMarker
+
+↓
+
+Update Warna
+
+Keuntungan:
+
+- Decoupled
+- Mudah dikembangkan
+- Tidak perlu polling
 
 ---
 
-## Status
+## ✅ Step 7 - Auto Hide Marker
 
-✅ Step 4 Selesai
+Marker otomatis menghilang setelah seluruh NPC selesai bergerak.
 
-Progress Day 7
+Flow:
 
-- [x] Step 1 - FormationVisualizer
-- [x] Step 2 - Hubungkan CommandManager
-- [x] Step 3 - Menggambar Gizmos
-- [x] Step 4 - Pewarnaan Slot
-- [ ] Step 5 - Debug Visual Lengkap
+Klik kanan
+
+↓
+
+Marker muncul
+
+↓
+
+NPC berjalan
+
+↓
+
+Semua NPC mencapai tujuan
+
+↓
+
+Marker menghilang
+
+---
+
+# Perubahan Arsitektur
+
+Sebelumnya:
+
+CommandManager
+
+↓
+
+FormationSlot
+
+↓
+
+NPC
+
+↓
+
+Marker
+
+Sekarang:
+
+FormationSlot
+
+↓
+
+Event
+
+↓
+
+FormationMarker
+
+Marker tidak lagi bergantung pada CommandManager.
+
+---
+
+# Slot Lifecycle
+
+Free
+
+↓
+
+Reserve()
+
+↓
+
+Reserved
+
+↓
+
+Occupy()
+
+↓
+
+Occupied
+
+↓
+
+Release()
+
+↓
+
+Free
+
+Seluruh perubahan state sekarang memiliki event.
+
+---
+
+# File yang Dibuat
+
+Assets/
+Scripts/
+
+Formation/
+
+- FormationVisualizer.cs
+- FormationMarker.cs
+- FormationSlot.cs
+
+Managers/
+
+- CommandManager.cs
+
+NPC/
+
+- NPCMovement.cs
+
+---
+
+# Fitur yang Berhasil
+
+✔ Formation Gizmos
+
+✔ Runtime Formation Marker
+
+✔ Marker Spawn
+
+✔ Marker Destroy
+
+✔ Slot Reserve
+
+✔ Slot Occupied
+
+✔ Slot Release
+
+✔ Slot Event
+
+✔ Marker mengikuti perubahan state
+
+✔ Marker Auto Hide
+
+---
+
+# Hasil Day 7
+
+Sistem visualisasi formasi kini sudah lengkap.
+
+Pemain dapat:
+
+- Melihat posisi formasi.
+- Melihat status slot.
+- Mengetahui slot yang sedang digunakan.
+- Marker otomatis hilang setelah pergerakan selesai.
+
+Sistem ini menjadi fondasi untuk pengembangan fitur formasi yang lebih kompleks pada Day 8.
+
+---
+
+# Roadmap Selanjutnya (Day 8)
+
+Fokus Day 8 adalah meningkatkan kualitas sistem formasi agar terasa seperti RTS modern.
+
+Target:
+
+- Dynamic Formation
+- Slot Reassignment
+- Slot Swapping
+- Path Optimization
+- Anti Crossing
+- Better Local Avoidance
+- Dynamic Rotation
+- Formation Cohesion

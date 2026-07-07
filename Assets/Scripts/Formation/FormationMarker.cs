@@ -22,12 +22,7 @@ public class FormationMarker : MonoBehaviour
         if (_slot == null)
             return;
 
-        SetState(_slot.State);
-    }
-
-    public void SetState(FormationSlotState state)
-    {
-        switch (state)
+        switch (_slot.State)
         {
             case FormationSlotState.Free:
                 _renderer.material.color = _freeColor;
@@ -41,5 +36,6 @@ public class FormationMarker : MonoBehaviour
                 _renderer.material.color = _occupiedColor;
                 break;
         }
+        transform.position = _slot.Position + Vector3.up * 0.5f;
     }
 }

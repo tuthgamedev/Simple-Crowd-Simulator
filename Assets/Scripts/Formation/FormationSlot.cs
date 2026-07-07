@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class FormationSlot
 {
     public Vector3 Position;
     public NPCMovement Occupant;
     public FormationSlotState State;
+
+    public event Action<FormationSlotState> OnStateChanged;
 
     public bool IsOccupied 
     {

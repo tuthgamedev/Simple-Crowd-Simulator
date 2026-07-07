@@ -58,6 +58,14 @@ public class FormationVisualizer : MonoBehaviour
             _markers.Add(marker);
         }
     }
+    
+    public void HideMarkers()
+    {
+        foreach (Transform child in transform)
+        {
+            child.gameObject.SetActive(false);
+        }
+    }
 
     private void OnDrawGizmos()
     {
@@ -90,4 +98,5 @@ public class FormationVisualizer : MonoBehaviour
             Gizmos.DrawSphere(slot.Position +Vector3.up * 0.3f, _slotRadius);
         }
     }
+
 }
