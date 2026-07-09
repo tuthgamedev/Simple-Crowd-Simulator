@@ -34,7 +34,7 @@
     },
     v4: {
       title: 'VERSION 2.2 (V2.2.0)',
-      features: ['Formation Marker', 'Runtime Slot Generation', 'Slot State System'],
+      features: ['New Formation Marker', 'Formation movement', 'NPC Behaviour'],
       released: '2024-11-20',
       playUrl: './v2.2.0/index.html'
     },
