@@ -158,6 +158,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d165bacaaa21c4478ed3478b743d011, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _meshRenderer: {fileID: 0}
+  _meshRenderer: {fileID: 4974457179848544169}
   _normalMaterial: {fileID: 2100000, guid: dd1fef1c834d8a84aba661ef95501c68, type: 2}
   _selectedMaterial: {fileID: 2100000, guid: 868014a166c5d764b950cc12a552ed68, type: 2}

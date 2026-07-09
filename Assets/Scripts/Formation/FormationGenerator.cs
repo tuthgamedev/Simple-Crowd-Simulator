@@ -127,29 +127,31 @@ public static class FormationGenerator
     public static List<FormationSlot> GenerateTriangle(
         Vector3 center,
         Vector3 forward,
-        int unitCount,
+        int slotCount,
         float spacing)
     {
-        List<FormationSlot> slots = new List<FormationSlot>();
+        List<FormationSlot> slots = new();
 
+        if (slotCount <= 0)
+            return slots;
+
+        forward.Normalize();
         Vector3 right = Vector3.Cross(Vector3.up, forward).normalized;
 
         int placed = 0;
-        int row = 0;
+        int row = 1;
 
-        while (placed < unitCount)
+        while (placed < slotCount)
         {
-            int unitsInRow = row + 1;
+            float rowWidth = (row - 1) * spacing;
 
-            float rowWidth = (unitsInRow - 1) * spacing;
-
-            for (int i = 0; i < unitsInRow && placed < unitCount; i++)
+            for (int i = 0; i < row && placed < slotCount; i++)
             {
                 float xOffset = i * spacing - rowWidth * 0.5f;
 
                 Vector3 position =
                     center
-                    - forward * row * spacing
+                    - forward * (row - 1) * spacing
                     + right * xOffset;
 
                 slots.Add(new FormationSlot(position));

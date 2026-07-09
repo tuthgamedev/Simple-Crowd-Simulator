@@ -5,125 +5,75 @@ using UnityEngine;
 public class MouseInput : MonoBehaviour
 {
     [SerializeField] private Camera _mainCamera;
-    [SerializeField] private SelectionManager _selectionManager;
-    [SerializeField] private SelectionBoxUI _selectionBoxUI;
     [SerializeField] private CommandManager _commandManager;
+    [SerializeField] private LayerMask _groundLayer;
+    [SerializeField] private SelectionInput _selectionInput;
+    private bool _leftMouseStartedOnUI;
+    private bool CanProcessGameplayInput()
+    {
+        if (InputManager.Instance == null)
+        {
+            Debug.LogError("InputManager belum ada di Scene.");
+            return false;
+        }
 
-    private Vector2 _dragStartPosition;
-    private bool _isDragging;
-
-    [SerializeField] private float _dragThreshold = 10f;
+        return !InputManager.Instance.IsPointerOverUI();
+    }
 
     private void Update()
     {
+        Debug.Log("Mouse Update");
+        //Begin Drag (Hold Left Click)
         if (Input.GetMouseButtonDown(0))
         {
-            StartDrag();
-        }
+            Debug.Log("Left");
+            _leftMouseStartedOnUI = !CanProcessGameplayInput();
 
-        if (Input.GetMouseButton(0))
-        {
-            UpdateDrag();
-        }
-
-        if (Input.GetMouseButtonUp(0))
-        {
-            EndDrag();
-        }
-
-        if (Input.GetMouseButtonDown(1))
-        {
-            HandleRightClick();
-        }
-    }
-
-    private void StartDrag()
-    {
-        _dragStartPosition = Input.mousePosition;
-        _isDragging = true;
-
-        _selectionBoxUI.Show(_dragStartPosition);
-    }
-
-    private void UpdateDrag()
-    {
-        if (!_isDragging)
-            return;
-
-        float distance = Vector2.Distance(_dragStartPosition, Input.mousePosition);
-
-        if (distance < _dragThreshold)
-            return;
-
-        _selectionBoxUI.UpdateBox(
-            _dragStartPosition,
-            Input.mousePosition);
-    }
-    
-    private void EndDrag()
-    {
-        if (!_isDragging)
-            return;
-
-        _isDragging = false;
-
-        float distance = Vector2.Distance(_dragStartPosition, Input.mousePosition);
-
-        //=== SINGLE CLICK ===
-        if (distance <_dragThreshold)
-        {
-            HandleLeftClick();
-            _selectionBoxUI.Hide();
-            return;
-        }
-
-        //=== BOX SELECTION ===
-
-        Vector2 start = _dragStartPosition;
-        Vector2 end = Input.mousePosition;
-
-        float minX = Mathf.Min(start.x, end.x);
-        float minY = Mathf.Min(start.y, end.y);
-
-        float width = Mathf.Abs(start.x - end.x);
-        float height = Mathf.Abs(start.y - end.y);
-
-        Rect selectionRect = new Rect(minX, minY, width, height);
-
-        _selectionManager.SelectInRectangle(selectionRect);
-
-        _selectionBoxUI.Hide();
-    }
-
-    private void HandleLeftClick()
-    {
-        if (_mainCamera == null || _selectionManager == null)
-        {
-            Debug.LogError("MouseInput : Camera atau SelectionManager belum diisi.");
-            return;
-        }
-
-        Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(ray, out RaycastHit hit))
-        {
-            NPCSelection npc = hit.collider.GetComponent<NPCSelection>();
-
-            if (npc != null)
+            if (!_leftMouseStartedOnUI)
             {
-                _selectionManager.SelectSingle(npc);
-                return;
+                Debug.Log("Begin Drag");
+                _selectionInput.BeginDrag();
             }
         }
 
-        _selectionManager.ClearSelection();
+        if (_leftMouseStartedOnUI)
+        {
+            if (Input.GetMouseButtonUp(0))
+            {
+                _leftMouseStartedOnUI = false;
+            }
+
+            return;
+        }
+
+        //update drag
+        if (_selectionInput != null && _selectionInput.IsDragging && Input.GetMouseButton(0))
+        {
+            _selectionInput.UpdateDrag();
+        }
+
+        //End Drag (Realese Hold Left Click)
+        if (_selectionInput != null && _selectionInput.IsDragging && Input.GetMouseButtonUp(0))
+        {
+            Debug.Log("End Drag");  
+            _selectionInput.EndDrag();
+        }
+ 
+        if (Input.GetMouseButtonDown(1))
+        {
+            Debug.Log("Right");
+            if (CanProcessGameplayInput())
+            {
+                HandleRightClick();
+            }
+        }
     }
 
     private void HandleRightClick()
     {
         Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
 
-        if (!Physics.Raycast(ray, out RaycastHit hit))
+        if (!Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, _groundLayer))
             return;
 
         _commandManager.MoveSelectedNPCs(hit.point);

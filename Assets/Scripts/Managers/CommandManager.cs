@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class CommandManager : MonoBehaviour
 {
+    private List<NPCSelection> _lastCommandGroup = new List<NPCSelection>();
+    private Vector3 _lastDestination;
+    private bool _hasDestination = false;
+
     [Header("Formation")]
     [SerializeField] private FormationType _currentFormation = FormationType.Rectangle;
     [SerializeField] private float _formationSpacing = 2f;
@@ -11,11 +15,56 @@ public class CommandManager : MonoBehaviour
     [Header("Reference")]
     [SerializeField] private SelectionManager _selectionManager;
     [SerializeField] private bool showDebug = false;
+    [SerializeField] private FormationPannelUI formationPanelUI;
 
    public void MoveSelectedNPCs(Vector3 destination)
-   {    
+   {
+        _lastDestination = destination;
+        _hasDestination = true;
+
         List<NPCSelection> selected = new List<NPCSelection>(_selectionManager.SelectedNPCs);
+        _lastCommandGroup = new List<NPCSelection>(selected);
         
+        MoveGroup(selected, destination);
+    }
+
+    public void SetFormation(FormationType formation)
+    {
+        if (_selectionManager == null || !_selectionManager.HasSelection)
+            return;
+        _currentFormation =formation;
+        Debug.Log($"Formation Changed : {formation}");
+
+        if (!_hasDestination)
+            return;
+        List<NPCSelection> selected = new List<NPCSelection>(_selectionManager.SelectedNPCs);
+        selected.RemoveAll(npc => npc == null);
+
+        if (selected.Count == 0)
+            return;
+
+        
+        if (_lastCommandGroup.Count == 0)
+            return;
+
+        Vector3 center = CalculateGroupCenter(selected);
+        MoveGroup(selected, _lastDestination);
+    }
+
+    private void ReformLastGroup()
+    {
+        List<NPCSelection> selected = new List<NPCSelection>(_lastCommandGroup);
+        selected.RemoveAll(npc => npc == null);
+
+        if (selected.Count == 0)
+            return;
+
+        Vector3 center = CalculateGroupCenter(selected);
+        MoveGroup(selected, _lastDestination);
+    }
+
+    private void MoveGroup(List<NPCSelection> selected, Vector3 destination)
+    {
         int npcCount = selected.Count;
 
         if (npcCount == 0)
@@ -46,13 +95,28 @@ public class CommandManager : MonoBehaviour
         {
             forward.Normalize();
         }
+
+        int slotCount = 
+            FormationUtility.GetIdealSlotCount(
+                _currentFormation,
+                npcCount
+            );
+
+        formationPanelUI.UpdatePanel(
+            _currentFormation,
+            npcCount,
+            slotCount
+        );
+        
+        Debug.Log($"NPC : {npcCount}");
+        Debug.Log($"Ideal Slot : {slotCount}");
         
         List<FormationSlot> slots = 
         FormationGenerator.GenerateFormation(
             _currentFormation,
             destination,
             forward,
-            npcCount,
+            slotCount,
             _formationSpacing
         );
 
@@ -108,5 +172,16 @@ public class CommandManager : MonoBehaviour
             yield return null;
         }
         FormationVisualizer.Instance.HideMarkers();
+    }
+
+    private Vector3 CalculateGroupCenter(List<NPCSelection> group)
+    {
+        Vector3 center = Vector3.zero;
+
+        foreach(NPCSelection npc in group)
+        {
+            center += npc.transform.position;
+        }
+        return center / group.Count;
     }
 }
