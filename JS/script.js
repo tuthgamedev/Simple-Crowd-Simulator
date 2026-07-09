@@ -32,6 +32,12 @@
       released: '2024-11-20',
       playUrl: './v2.1.0/index.html'
     },
+    v4: {
+      title: 'VERSION 2.2 (V2.2.0)',
+      features: ['Formation Marker', 'Runtime Slot Generation', 'Slot State System'],
+      released: '2024-11-20',
+      playUrl: './v2.2.0/index.html'
+    },
     latest: {
       title: 'VERSION 3 (V3) — LATEST',
       features: ['Group behavior', 'Formation movement', 'UI & Settings'],
