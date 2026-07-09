@@ -38,6 +38,12 @@
       released: '2024-11-20',
       playUrl: './v2.2.0/index.html'
     },
+    v5: {
+      title: 'VERSION 2.3 (V2.3.0)',
+      features: ['Formation Info UI', 'Formation Variation UI', 'Reactivate NPC Spawn Button'],
+      released: '2024-11-20',
+      playUrl: './v2.3.0/index.html'
+    },
     latest: {
       title: 'VERSION 3 (V3) — LATEST',
       features: ['Group behavior', 'Formation movement', 'UI & Settings'],
@@ -124,7 +130,7 @@
   const timelineFill = document.getElementById('timelineFill');
   const timelineTrack = document.querySelector('.timeline-track');
   // 3 of 4 milestones complete → fill to the 3rd node position (~66%)
-  const TIMELINE_PROGRESS = '66%';
+  const TIMELINE_PROGRESS = '75%';
 
   if (timelineFill && timelineTrack) {
     const fillObserver = new IntersectionObserver(
